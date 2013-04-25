@@ -1,6 +1,7 @@
 " Features & plugin list {{{1
 " Fast editing of the .vimrc
 let mapleader=","
+let maplocalleader="ä"
 map <leader>e :e! ~/.vimrc<cr>
 autocmd! BufWritePost .vimrc source %
 
@@ -64,7 +65,7 @@ syntax enable
           exec 'set runtimepath+='.vam_install_path.'/vim-addon-manager'
 
           " Tell VAM which plugins to fetch & load:
-          call vam#ActivateAddons(['jellybeans'], {'auto_install' : 0})
+          call vam#ActivateAddons(['jellybeans', 'Vim-R-plugin', 'Screen_vim__gnu_screentmux'], {'auto_install' : 0})
           " sample: call vam#ActivateAddons(['pluginA','pluginB', ...], {'auto_install' : 0})
 
           " Addons are put into vam_install_path/plugin-name directory
@@ -160,8 +161,8 @@ set expandtab
 " next search
 nnoremap <C-L> :nohl<CR><C-L>
 nnoremap <F5> :!clear<CR>:wa\|:make<CR>
-nnoremap <F6> :!./main<CR>
 nnoremap <Leader>cd :let @+=expand("%:p:h")<CR>
+nnoremap <Leader>l :ls<CR>:b<space>
 
 "nnoremap <Leader>cc :%s/\/\*\_.\{-}\*\///g<CR>:%s/);/){\r\r}<CR>
 nnoremap <Leader>cc :g#/\*#.,/\*\/$/d<CR>:%s/);/){\r}<CR>:g/#/d<CR>
@@ -179,14 +180,20 @@ function! <SID>cppstuff()
     endif
     nmap <M-a> <Esc>:!ctags *.cpp *.h<CR>
     inoremap ' ->
+    nnoremap <F6> :!./main<CR>
 endfunction
 
+" LaTeX-special hook"{{{
 autocmd FileType tex call <SID>latexstuff()
 function! <SID>latexstuff()
-    set makeprg=pdflatex\ %:h/*.tex
+    set makeprg=xelatex\ %
+    "set makeprg=pdflatex\ %:h/*.tex
     nnoremap <F5> :!clear<CR>:w\|:make<CR><CR>
+    nnoremap <F6> :execute "!zathura " . expand("%:r") . ".pdf &"<CR>
 endfunction
 "}}}"}}}"}}}
+let vimrplugin_screenplugin = 1
+let vimrplugin_only_in_tmux = 1
 " Look & folding {{{1
 
 " Set the command window height to 2 lines, to avoid many cases of having to
