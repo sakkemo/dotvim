@@ -119,8 +119,6 @@ function! <SID>latexstuff()
     nnoremap <F6> :execute "!zathura " . expand("%:r") . ".pdf &"<CR>
 endfunction
 "}}}"}}}"}}}
-let vimrplugin_screenplugin = 1
-let vimrplugin_only_in_tmux = 1
 " Look & folding {{{1
 
 " Set the command window height to 2 lines, to avoid many cases of having to
