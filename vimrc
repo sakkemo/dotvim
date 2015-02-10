@@ -30,7 +30,9 @@ syntax enable
 set hidden
 
 set wildmenu
-set wildignorecase
+if has('&wildignorecase')
+    set wildignorecase
+end
 set wildmode=list:longest,full
 
 " Show partial commands in the last line of the screen
@@ -155,8 +157,13 @@ set foldmethod=marker
 set list
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
 
-colorscheme apprentice
-if (colors_name=~"jellybeans")
+try
+    colorscheme apprentice
+catch
+    colorscheme desert
+endtry
+
+if (exists('g:colors_name') && colors_name=~"jellybeans")
     hi Search guifg=#F0E4A0 guibg=#302820
     hi clear SpellBad
     hi SpellBad term=reverse cterm=underline ctermbg=88 gui=undercurl guisp=Red 
