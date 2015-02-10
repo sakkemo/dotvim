@@ -1,11 +1,19 @@
-execute pathogen#infect()
+filetype off
+syntax off
+
+call pathogen#infect()
+
+filetype plugin indent on
+syntax on
+
+runtime macros/matchit.vim
 
 " Features & plugin list {{{1
 " Fast editing of the .vimrc
 let mapleader=","
 let maplocalleader="ä"
-map <leader>e :e! ~/.vimrc<cr>
-autocmd! BufWritePost .vimrc source %
+map <leader>e :e! $MYVIMRC<cr>
+autocmd! BufWritePost $MYVIMRC source %
 
 " Set 'nocompatible' to ward off unexpected things that your distro might
 " have made, as well as sanely reset options when re-sourcing .vimrc
@@ -22,6 +30,8 @@ syntax enable
 set hidden
 
 set wildmenu
+set wildignorecase
+set wildmode=list:longest,full
 
 " Show partial commands in the last line of the screen
 set showcmd
@@ -87,7 +97,6 @@ set expandtab
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
 nnoremap <C-L> :nohl<CR><C-L>
-nnoremap <F5> :!clear<CR>:wa\|:make<CR>
 nnoremap <Leader>cd :let @+=expand("%:p:h")<CR>
 nnoremap <Leader>l :ls<CR>:b<space>
 
@@ -96,9 +105,9 @@ nnoremap <Leader>cc :g#/\*#.,/\*\/$/d<CR>:%s/);/){\r}<CR>:g/#/d<CR>
 
 "------------------------------------------------------------
 " Make {{{1
-"
+
+" C++-special hook"{{{2
 autocmd FileType cpp call <SID>cppstuff()
-" C++-special hook"{{{
 function! <SID>cppstuff()
     if filereadable("Makefile")
         set makeprg=make
@@ -110,7 +119,7 @@ function! <SID>cppstuff()
     nnoremap <F6> :!./main<CR>
 endfunction
 
-" LaTeX-special hook"{{{
+" LaTeX-special hook"{{{2
 autocmd FileType tex call <SID>latexstuff()
 function! <SID>latexstuff()
     "set makeprg=xelatex\ %
@@ -118,18 +127,42 @@ function! <SID>latexstuff()
     nnoremap <F5> :!clear<CR>:w\|:make<CR><CR>
     nnoremap <F6> :execute "!zathura " . expand("%:r") . ".pdf &"<CR>
 endfunction
-"}}}"}}}"}}}
+" AsciiDoc-special hook"{{{2
+autocmd FileType asciidoc call <SID>asciidocstuff()
+function! <SID>asciidocstuff()
+    "set makeprg=xelatex\ %
+    set makeprg=asciidoctor\ \"%:h/*.adoc\"\ -a\ ext-relative=.html
+    nnoremap <F5> :w\|:make<CR><CR>
+    nnoremap <F6> :execute "!launcher.exe \"" . expand("%:p:r") . ".adoc\""<CR>
+    nnoremap <F10> :execute "!launcher.exe \"" . expand("%:p:r") . ".html\""<CR>
+endfunction
+"------------------------------------------------------------
 " Look & folding {{{1
-
+if has("gui_running")
+    set guioptions=acegiLt
+    set guifont=Fira_Mono:h10:cANSI
+end
 " Set the command window height to 2 lines, to avoid many cases of having to
 " "press <Enter> to continue"
 set cmdheight=2
 
 set number
 
+set statusline=%<\ %f\ %m[%{&ff},%{&ft}]%w%=\ L:\ \%l\/\%L\ C:\ \%c\ 
+
 set foldmethod=marker
 
-colorscheme jellybeans
+set list
+set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+
+colorscheme apprentice
+if (colors_name=~"jellybeans")
+    hi Search guifg=#F0E4A0 guibg=#302820
+    hi clear SpellBad
+    hi SpellBad term=reverse cterm=underline ctermbg=88 gui=undercurl guisp=Red 
+    "guibg=#902020 
+end
+
 "------------------------------------------------------------
 "
 "

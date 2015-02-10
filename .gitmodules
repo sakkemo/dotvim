@@ -1,3 +1,15 @@
 [submodule "bundle/jellybeans"]
 	path = bundle/jellybeans
 	url = https://github.com/nanotech/jellybeans.vim
+[submodule "bundle/vim-asciidoc"]
+	path = bundle/vim-asciidoc
+	url = https://github.com/dahu/vim-asciidoc.git
+[submodule "bundle/apprentice"]
+	path = bundle/apprentice
+	url = https://github.com/romainl/Apprentice.git
+[submodule "bundle/Asif"]
+	path = bundle/Asif
+	url = https://github.com/dahu/Asif.git
+[submodule "bundle/vimple"]
+	path = bundle/vimple
+	url = https://github.com/dahu/vimple.git
