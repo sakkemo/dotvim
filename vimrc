@@ -37,6 +37,9 @@ if has('&wildignorecase')
 end
 set wildmode=list:longest,full
 
+set completeopt=menu,longest
+set isfname-==
+
 " Show partial commands in the last line of the screen
 set showcmd
 
