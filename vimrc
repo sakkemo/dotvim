@@ -6,6 +6,8 @@ call pathogen#infect()
 filetype plugin indent on
 syntax on
 
+
+scriptencoding utf-8
 runtime macros/matchit.vim
 
 " Features & plugin list {{{1
