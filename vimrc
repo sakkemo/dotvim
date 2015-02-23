@@ -155,7 +155,7 @@ set cmdheight=2
 
 set number
 
-set statusline=%<\ %f\ %m[%{&ff},%{&ft}]%w%=\ L:\ \%l\/\%L\ C:\ \%c\ 
+set statusline=%<\ %f\ %m\ [%{&ff},%{&ft}%{&eol?'':','}%#Error#%{&eol?'':'noeol'}%*]%w%=\ L:\ \%l\/\%L\ C:\ \%c\ 
 
 set foldmethod=marker
 
