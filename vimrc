@@ -104,7 +104,7 @@ set expandtab
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
 nnoremap <C-L> :nohl<CR><C-L>
-nnoremap <Leader>cd :let @+=expand("%:p:h")<CR>
+nnoremap <Leader>cd :cd %:h
 nnoremap <Leader>l :ls<CR>:b<space>
 
 "nnoremap <Leader>cc :%s/\/\*\_.\{-}\*\///g<CR>:%s/);/){\r\r}<CR>
@@ -147,7 +147,7 @@ endfunction
 " Look & folding {{{1
 if has("gui_running")
     set guioptions=acegiLt
-    set guifont=Fira_Mono:h10:cANSI
+    set guifont=Fira\ Mono\ 11
 end
 " Set the command window height to 2 lines, to avoid many cases of having to
 " "press <Enter> to continue"
@@ -176,7 +176,24 @@ if (exists('g:colors_name') && colors_name=~"jellybeans")
 end
 
 "------------------------------------------------------------
-"
-"
 nnoremap <leader>p :registers 012345<CR>:normal "p<left>
 vnoremap <leader>p :registers 012345<CR>:normal "p<left>
+" Features & functions {{{1
+function! LongestLine()
+    let lines = map(getline(1, '$'), 'len(v:val)')
+    return index(lines, max(lines))+1
+endfunction
+command! Longest exec LongestLine()
+"------------------------------------------------------------
+
+nnoremap <leader>ge :call setline('.', systemlist('curl -s ' .  shellescape(getline('.'))))<CR>
+
+" VIRTUALENV setup
+:python << EOF
+import os 
+virtualenv = os.environ.get('VIRTUAL_ENV') 
+if virtualenv: 
+  activate_this = os.path.join(virtualenv, 'bin', 'activate_this.py') 
+  if os.path.exists(activate_this): 
+    execfile(activate_this, dict(__file__=activate_this)) 
+EOF
