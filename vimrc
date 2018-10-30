@@ -1,11 +1,7 @@
 """ nocompatible, syntax, ftplugin
-" Set 'nocompatible' to ward off unexpected things that your distro might
-" have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
 
 filetype plugin indent on
-filetype plugin indent on
-" Enable syntax highlighting
 if !exists("g:syntax_on")
     syntax enable
 endif
@@ -13,7 +9,7 @@ endif
 scriptencoding utf-8
 runtime macros/matchit.vim
 
-"""Fast editing of the .vimrc
+""" fast editing of the .vimrc
 let mapleader=","
 let maplocalleader="ä"
 map <leader>e :e! $MYVIMRC<cr>
@@ -31,7 +27,7 @@ set wildmode=list:longest,full
 set completeopt=menu,longest
 set isfname-==
 
-""" Ruler, showcmd, hlsearch, laststatus
+""" ruler, showcmd, hlsearch, laststatus
 set showcmd
 set hlsearch
 set ruler
