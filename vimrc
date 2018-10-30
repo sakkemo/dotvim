@@ -1,34 +1,25 @@
-filetype off
-syntax off
-
-call pathogen#infect()
-
-filetype plugin indent on
-syntax on
-
-
-scriptencoding utf-8
-runtime macros/matchit.vim
-
-" Features & plugin list {{{1
-" Fast editing of the .vimrc
-let mapleader=","
-let maplocalleader="ä"
-map <leader>e :e! $MYVIMRC<cr>
-autocmd! BufWritePost $MYVIMRC source %
-
+""" nocompatible, syntax, ftplugin
 " Set 'nocompatible' to ward off unexpected things that your distro might
 " have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
 
 filetype plugin indent on
-
+filetype plugin indent on
 " Enable syntax highlighting
-syntax enable
+if !exists("g:syntax_on")
+    syntax enable
+endif
 
-"------------------------------------------------------------
-" Must have options {{{1
+scriptencoding utf-8
+runtime macros/matchit.vim
 
+"""Fast editing of the .vimrc
+let mapleader=","
+let maplocalleader="ä"
+map <leader>e :e! $MYVIMRC<cr>
+autocmd! BufWritePost $MYVIMRC source %
+
+""" hidden, completion
 set hidden
 
 set wildmenu
@@ -40,114 +31,56 @@ set wildmode=list:longest,full
 set completeopt=menu,longest
 set isfname-==
 
-" Show partial commands in the last line of the screen
+""" Ruler, showcmd, hlsearch, laststatus
 set showcmd
-
 set hlsearch
+set ruler
+set laststatus=2
+"set nomodeline
 
-set nomodeline
-
-
-"------------------------------------------------------------
-" Usability options {{{1
-
+""" case, backspace, indent
 set ignorecase
 set smartcase
 
 set backspace=indent,eol,start
-
-set autoindent
-
 set nostartofline
 
-set ruler
-
-set laststatus=2
-
-" Instead of failing a command because of unsaved changes, instead raise a
-" dialogue asking if you wish to save changed files.
-set confirm
-
-" Use visual bell instead of beeping when doing something wrong
-set visualbell
-
-" And reset the terminal code for the visual bell. If visualbell is set, and
-" this line is also included, vim will neither flash nor beep. If visualbell
-" is unset, this does nothing.
-set t_vb=
-
-" Enable use of the mouse for all modes
-set mouse=a
-
-" Quickly time out on keycodes, but never time out on mappings
-set notimeout ttimeout ttimeoutlen=200
-
-" Use <F11> to toggle between 'paste' and 'nopaste'
-set pastetoggle=<F11>
-
-
-"------------------------------------------------------------
-" Indentation options {{{1
-"
-" Indentation settings according to personal preference.
-
-" Indentation settings for using 2 spaces instead of tabs.
-" Do not change 'tabstop' from its default value of 8 with this setup.
+set autoindent
 set shiftwidth=4
 set softtabstop=4
 set expandtab
 
+""" usability preferences
+set confirm
+set visualbell
+set t_vb=
+set mouse=a
+set notimeout ttimeout ttimeoutlen=200
 
-"------------------------------------------------------------
-" Mappings {{{1
+"undo
+if !isdirectory($HOME."/.vim")
+    call mkdir($HOME."/.vim", "", 0770)
+endif
+if !isdirectory($HOME."/.vim/undo-dir")
+    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+endif
+set undodir=~/.vim/undo-dir
+set undofile
 
-" Map <C-L> (redraw screen) to also turn off search highlighting until the
-" next search
+""" mappings
 nnoremap <C-L> :nohl<CR><C-L>
 nnoremap <Leader>cd :cd %:h
 nnoremap <Leader>l :ls<CR>:b<space>
-
-"nnoremap <Leader>cc :%s/\/\*\_.\{-}\*\///g<CR>:%s/);/){\r\r}<CR>
 nnoremap <Leader>cc :g#/\*#.,/\*\/$/d<CR>:%s/);/){\r}<CR>:g/#/d<CR>
+nnoremap <leader>p :registers 012345<CR>:normal "p<left>
+vnoremap <leader>p :registers 012345<CR>:normal "p<left>
+nnoremap <leader>ge :call setline('.', systemlist('curl -s ' .  shellescape(getline('.'))))<CR>
 
-"------------------------------------------------------------
-" Make {{{1
-
-" C++-special hook"{{{2
-autocmd FileType cpp call <SID>cppstuff()
-function! <SID>cppstuff()
-    if filereadable("Makefile")
-        set makeprg=make
-    else
-        set makeprg=g++\ -std=c++0x\ -Wall\ -Wextra\ -pedantic\ -g\ -D_GLIBCXX_DEBUG\ -o\ main\ %:h/*.cc
-    endif
-    nmap <M-a> <Esc>:!ctags *.cpp *.h<CR>
-    inoremap ' ->
-    nnoremap <F6> :!./main<CR>
-endfunction
-
-" LaTeX-special hook"{{{2
-autocmd FileType tex call <SID>latexstuff()
-function! <SID>latexstuff()
-    "set makeprg=xelatex\ %
-    set makeprg=pdflatex\ %:h/*.tex
-    nnoremap <F5> :!clear<CR>:w\|:make<CR><CR>
-    nnoremap <F6> :execute "!zathura " . expand("%:r") . ".pdf &"<CR>
-endfunction
-" AsciiDoc-special hook"{{{2
-autocmd FileType asciidoc call <SID>asciidocstuff()
-function! <SID>asciidocstuff()
-    "set makeprg=xelatex\ %
-    set makeprg=asciidoctor\ \"%:h/*.adoc\"\ -a\ ext-relative=.html
-    nnoremap <F5> :w\|:make<CR><CR>
-    nnoremap <F6> :execute "!launcher.exe \"" . expand("%:p:r") . ".adoc\""<CR>
-    nnoremap <F10> :execute "!launcher.exe \"" . expand("%:p:r") . ".html\""<CR>
-endfunction
-"------------------------------------------------------------
-" Look & folding {{{1
+""" GUI etc
 if has("gui_running")
     set guioptions=acegiLt
-    set guifont=Fira\ Mono\ 11
+    set guifont=Fira\ Mono:h11
+    "set guifont=Fira\ Mono\ 11
 end
 " Set the command window height to 2 lines, to avoid many cases of having to
 " "press <Enter> to continue"
@@ -156,8 +89,6 @@ set cmdheight=2
 set number
 
 set statusline=%<\ %f\ %m\ [%{&ff},%{&ft}%{&eol?'':','}%#Error#%{&eol?'':'noeol'}%*]%w%=\ L:\ \%l\/\%L\ C:\ \%c\ 
-
-set foldmethod=marker
 
 set list
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
@@ -175,19 +106,14 @@ if (exists('g:colors_name') && colors_name=~"jellybeans")
     "guibg=#902020 
 end
 
-"------------------------------------------------------------
-nnoremap <leader>p :registers 012345<CR>:normal "p<left>
-vnoremap <leader>p :registers 012345<CR>:normal "p<left>
-" Features & functions {{{1
+""" functions
 function! LongestLine()
     let lines = map(getline(1, '$'), 'len(v:val)')
     return index(lines, max(lines))+1
 endfunction
 command! Longest exec LongestLine()
-"------------------------------------------------------------
 
-nnoremap <leader>ge :call setline('.', systemlist('curl -s ' .  shellescape(getline('.'))))<CR>
-
+""" use venv python
 " VIRTUALENV setup
 :python << EOF
 import os 
@@ -197,3 +123,6 @@ if virtualenv:
   if os.path.exists(activate_this): 
     execfile(activate_this, dict(__file__=activate_this)) 
 EOF
+
+"" vim:fdm=expr:fdl=0
+"" vim:fde=getline(v\:lnum)=~'^""'?'>'.(matchend(getline(v\:lnum),'""*')-2)\:'='
